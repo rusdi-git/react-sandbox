@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {v4} from 'uuid';
-import Grid from '@mui/material/Grid';
-import { addDays, addMonths, format, startOfMonth, startOfWeek, subMonths } from 'date-fns';
-import { endOfMonth, endOfWeek } from 'date-fns/esm';
+import { addDays, addMonths, format, isSameDay, startOfMonth, startOfWeek, subMonths } from 'date-fns';
+import { endOfMonth, endOfWeek, isToday } from 'date-fns/esm';
 import id from 'date-fns/esm/locale/id/index.js';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import IconButton from '@mui/material/IconButton';
+import Box from '@mui/material/Box';
+
+import { successChangeCalendarSelected } from '../state/calendar/action';
+import StateManager from '../state/context';
 
 function CalHeader(props:{currentDate:Date, changeDate:(val:Date)=>void}) {
     const nextMonth =() =>{
@@ -20,42 +23,53 @@ function CalHeader(props:{currentDate:Date, changeDate:(val:Date)=>void}) {
     const headerText = `${format(props.currentDate,MonthFormat,{locale:id})}-${format(props.currentDate,YearFormat,{locale:id})}`;
     
     return (
-        <Grid container item xs={true}>
-            <Grid item xs={2}>
-                <IconButton aria-label='previous' onClick={()=>{prevMonth()}}><ChevronLeftIcon/></IconButton>
+        <Box sx={{display:'flex',flexDirection:"row"}}>
+            <Box sx={{marginRight:'20px'}}>
+            <IconButton aria-label='previous' onClick={()=>{prevMonth()}}><ChevronLeftIcon/></IconButton>
                 <IconButton aria-label='next' onClick={()=>{nextMonth()}}><ChevronRightIcon/></IconButton>
-            </Grid>
-            <Grid item xs={10}><h3 style={{textAlign:"center"}}>{headerText}</h3></Grid>            
-        </Grid>
+            </Box>
+            <Box><h3 style={{textAlign:"center"}}>{headerText}</h3></Box>
+        </Box>
     )
 }
 
-function CalDays(props:{currentDate:Date}) {
+function CalDays() {
     const dateFormat = 'EEEEEE';
     const days = [];
-    let startDate = startOfWeek(props.currentDate);
+    let startDate = startOfWeek(new Date());
 
     for (let i = 0; i<7;i++) {
         days.push(
-            <Grid key={`day-${v4()}`} xs={true} item>
+            <Box key={`day-${v4()}`} sx={{width:'50px',height:'50px'}}>
                 <p style={{textAlign:"center"}}>{format(addDays(startDate,i),dateFormat,{locale:id})}</p>
-            </Grid>
+            </Box>
         )
     }
 
-    return <Grid container item>{days}</Grid>
+    return <Box sx={{display:"flex", flexDirection:"row"}}>{days}</Box>
 }
 
 function CalCell(props:{day:Date}) {
     const dateFormat = 'd';
     const formattedDate = format(props.day,dateFormat,{locale:id});
+    const {state,dispatch} = useContext(StateManager);
+    const selected = state.calendar?.selected;
+    const isDateToday = isToday(props.day);
+    const isSelected = selected && isSameDay(selected,props.day);
+    const selectDate = (val:Date)=>{
+        dispatch!(successChangeCalendarSelected(val));
+    }
     return (
-        <Grid item xs={true} sx={(theme)=>({
-            bgcolor:theme.palette.grey["50"],
-            "&:hover": {
-                bgcolor: theme.palette.grey["200"]
-            }
-        })}><p style={{textAlign:"center"}}>{formattedDate}</p></Grid>
+        <Box sx={(theme)=>({
+            width:'50px',
+            height:'50px',
+            bgcolor:isSelected?theme.palette.primary.main:isDateToday?theme.palette.success.main: theme.palette.grey["50"],
+            ...((isSelected || isDateToday) && {borderRadius:'50px'}),
+            ...(!isSelected && {"&:hover": {
+                bgcolor: isDateToday? theme.palette.success.light:theme.palette.grey["200"],
+                borderRadius:'50px',
+            }})
+        })} onClick={()=>{selectDate(props.day)}}><p style={{textAlign:"center"}}>{formattedDate}</p></Box>
     )
 }
 
@@ -75,14 +89,16 @@ function CalRows(props:{currentDate:Date}) {
             day=addDays(day,1)
         }
         Rows.push(
-            <Grid container item key={`day-row-${v4()}`}>{days}</Grid>
+            <Box key={`day-row-${v4()}`} sx={{display:"flex",flexDirection:"row"}}>{days}</Box>
         );
         days = [];
     }
     return (
-        <Grid container>
+        <Box sx={(theme)=>({
+            backgroundColor:theme.palette.grey["50"]
+        })}>
             {Rows}
-        </Grid>
+        </Box>
     )
 }
 
@@ -92,9 +108,9 @@ export default function Calender () {
     const useChangeDate = (val:Date)=>{
         useDisplayDate(val);
     }
-    return <Grid container style={{maxWidth:'600px'}}>
+    return <Box style={{maxWidth:'400px'}}>
         <CalHeader currentDate={displayDate} changeDate={useChangeDate}/>
-        <CalDays currentDate={displayDate}/>
+        <CalDays />
         <CalRows currentDate={displayDate}/>
-    </Grid>
+    </Box>
 }
