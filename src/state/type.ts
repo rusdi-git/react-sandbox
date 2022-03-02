@@ -1,7 +1,7 @@
-import { CalendarState } from "./calendar/type";
+import { ThemeState } from "./theme/type";
 
 export interface State {
-    calendar?: CalendarState;
+    theme?: ThemeState
 }
 
 export interface Dispatch {

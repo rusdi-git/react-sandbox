@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, createContext } from 'react';
 import {v4} from 'uuid';
 import { addDays, addMonths, format, isSameDay, startOfMonth, startOfWeek, subMonths } from 'date-fns';
 import { endOfMonth, endOfWeek, isToday } from 'date-fns/esm';
@@ -7,9 +7,14 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
+import { Typography } from '@mui/material';
 
-import { successChangeCalendarSelected } from '../state/calendar/action';
-import StateManager from '../state/context';
+type CalendarContext = {
+    state: {selected:Date|null};
+    changeSelected?: (val:Date)=>void;
+}
+
+const CalendarStateManager = createContext<CalendarContext>({state:{selected:null}});
 
 function CalHeader(props:{currentDate:Date, changeDate:(val:Date)=>void}) {
     const nextMonth =() =>{
@@ -52,12 +57,12 @@ function CalDays() {
 function CalCell(props:{day:Date}) {
     const dateFormat = 'd';
     const formattedDate = format(props.day,dateFormat,{locale:id});
-    const {state,dispatch} = useContext(StateManager);
-    const selected = state.calendar?.selected;
+    const {state,changeSelected} = useContext(CalendarStateManager);
+    const selected = state.selected;
     const isDateToday = isToday(props.day);
     const isSelected = selected && isSameDay(selected,props.day);
     const selectDate = (val:Date)=>{
-        dispatch!(successChangeCalendarSelected(val));
+        changeSelected!(val);
     }
     return (
         <Box sx={(theme)=>({
@@ -69,7 +74,7 @@ function CalCell(props:{day:Date}) {
                 bgcolor: isDateToday? theme.palette.success.light:theme.palette.grey["200"],
                 borderRadius:'50px',
             }})
-        })} onClick={()=>{selectDate(props.day)}}><p style={{textAlign:"center"}}>{formattedDate}</p></Box>
+        })} onClick={()=>{selectDate(props.day)}}><Typography sx={(theme)=>({textAlign:"center",color:theme.palette.text.primary,paddingTop:'15px'})}>{formattedDate}</Typography></Box>
     )
 }
 
@@ -104,13 +109,14 @@ function CalRows(props:{currentDate:Date}) {
 
 
 export default function Calender () {
-    const [displayDate,useDisplayDate] = React.useState(new Date());
-    const useChangeDate = (val:Date)=>{
-        useDisplayDate(val);
-    }
-    return <Box style={{maxWidth:'400px'}}>
-        <CalHeader currentDate={displayDate} changeDate={useChangeDate}/>
+    const [displayDate,setDisplayDate] = React.useState(new Date());
+    const [selectedDate,setSelectedDate] = React.useState<Date|null>(null);
+
+    return <CalendarStateManager.Provider value={{state:{selected:selectedDate},changeSelected:setSelectedDate}}>
+        <Box style={{maxWidth:'400px'}}>
+        <CalHeader currentDate={displayDate} changeDate={setDisplayDate}/>
         <CalDays />
         <CalRows currentDate={displayDate}/>
     </Box>
+    </CalendarStateManager.Provider>
 }
