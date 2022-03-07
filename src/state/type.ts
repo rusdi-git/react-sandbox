@@ -1,14 +1,14 @@
-import { ThemeState } from "./theme/type";
+import { ThemeState } from './theme/type';
 
 export interface State {
-    theme?: ThemeState
+  theme?: ThemeState;
 }
 
 export interface Dispatch {
-    (action:any):void;
+  (action: any): void;
 }
 
 export interface Initial {
-    state: State;
-    dispatch: Dispatch|null;
+  state: State;
+  dispatch: Dispatch | null;
 }

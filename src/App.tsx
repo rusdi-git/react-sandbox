@@ -8,30 +8,29 @@ import StateManager from './state/context';
 import useCombinedReducer from './helper/reducer';
 import getThemeReducer from './state/theme/reducer';
 
-
 function App() {
-  const [state,dispatch] = useCombinedReducer({
-    theme: React.useReducer(...getThemeReducer())
+  const [state, dispatch] = useCombinedReducer({
+    theme: React.useReducer(...getThemeReducer()),
   });
   const theme = React.useMemo(
     () =>
       createTheme({
         palette: {
-          mode:state.theme?.theme || "light",
+          mode: state.theme?.theme || 'light',
         },
       }),
-    [state.theme?.theme],
+    [state.theme?.theme]
   );
 
   return (
-    <StateManager.Provider value={{state,dispatch}}>
+    <StateManager.Provider value={{ state, dispatch }}>
       <ThemeProvider theme={theme}>
-      <BrowserRouter>
-    <Main/>
-    </BrowserRouter>
+        <BrowserRouter>
+          <Main />
+        </BrowserRouter>
       </ThemeProvider>
     </StateManager.Provider>
-  )
+  );
 }
 
 export default App;
