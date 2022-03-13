@@ -7,6 +7,7 @@ import { Route, Routes } from 'react-router-dom';
 import Navigation from './navigation';
 import Calender from './calender';
 import AppBar from './appbar';
+import LoginForm from './login-form';
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -41,6 +42,7 @@ export default function Main() {
         <Routes>
           <Route path="/calender" element={<Calender />} />
           <Route path="/editable-table" element={<EditableTable />} />
+          <Route path="/login" element={<LoginForm />} />
         </Routes>
       </Box>
     </Box>

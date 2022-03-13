@@ -10,6 +10,7 @@ import ListItemText from '@mui/material/ListItemText';
 import EventIcon from '@mui/icons-material/Event';
 import TableViewIcon from '@mui/icons-material/TableView';
 import IconButton from '@mui/material/IconButton';
+import InputIcon from '@mui/icons-material/Input';
 import MuiDrawer from '@mui/material/Drawer';
 import { Link } from 'react-router-dom';
 
@@ -95,6 +96,14 @@ export default function Navigation(props: NavigationType) {
               <TableViewIcon />
             </ListItemIcon>
             <ListItemText>Editable-Table</ListItemText>
+          </ListItem>
+        </Link>
+        <Link to="/login" style={{ textDecoration: 'none', color: theme.palette.text.primary }}>
+          <ListItem>
+            <ListItemIcon>
+              <InputIcon />
+            </ListItemIcon>
+            <ListItemText>Login Form</ListItemText>
           </ListItem>
         </Link>
       </List>
