@@ -98,10 +98,7 @@ export default function Navigation(props: NavigationType) {
             <ListItemText>Editable-Table</ListItemText>
           </ListItem>
         </Link>
-        <Link
-          to="/login"
-          style={{ textDecoration: 'none', color: theme.palette.text.primary }}
-        >
+        <Link to="/login" style={{ textDecoration: 'none', color: theme.palette.text.primary }}>
           <ListItem>
             <ListItemIcon>
               <InputIcon />
