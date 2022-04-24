@@ -84,13 +84,13 @@ const AppBarStyled = styled(MuiAppBar, {
 
 export default function AppBar(props: { handleDrawerOpen: () => void; open: boolean }) {
   const [isDarkTheme, setDarkTheme] = React.useState(false);
-  const { state, dispatch } = React.useContext(StateManager);
+  const { dispatch } = React.useContext(StateManager);
 
   React.useEffect(() => {
     if (isDarkTheme) {
-      dispatch!(changeThemeDark());
+      dispatch(changeThemeDark());
     } else {
-      dispatch!(changeThemeLight());
+      dispatch(changeThemeLight());
     }
   }, [isDarkTheme]);
 

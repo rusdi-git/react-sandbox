@@ -7,10 +7,12 @@ import Main from './layout/main';
 import StateManager from './state/context';
 import useCombinedReducer from './helper/reducer';
 import getThemeReducer from './state/theme/reducer';
+import getCredentialReducer from './state/credential/reducer';
 
 function App() {
   const [state, dispatch] = useCombinedReducer({
     theme: React.useReducer(...getThemeReducer()),
+    credential: React.useReducer(...getCredentialReducer()),
   });
   const theme = React.useMemo(
     () =>
