@@ -8,6 +8,7 @@ import Navigation from './navigation';
 import Calender from './calender';
 import AppBar from './appbar';
 import LoginForm from './login-form';
+import PersonTable from './person-table';
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -43,6 +44,7 @@ export default function Main() {
           <Route path="/calender" element={<Calender />} />
           <Route path="/editable-table" element={<EditableTable />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/paginated-table" element={<PersonTable />} />
         </Routes>
       </Box>
     </Box>

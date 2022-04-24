@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
@@ -11,8 +13,8 @@ import EventIcon from '@mui/icons-material/Event';
 import TableViewIcon from '@mui/icons-material/TableView';
 import IconButton from '@mui/material/IconButton';
 import InputIcon from '@mui/icons-material/Input';
+import PersonIcon from '@mui/icons-material/Person';
 import MuiDrawer from '@mui/material/Drawer';
-import { Link } from 'react-router-dom';
 
 type NavigationType = {
   open: boolean;
@@ -104,6 +106,17 @@ export default function Navigation(props: NavigationType) {
               <InputIcon />
             </ListItemIcon>
             <ListItemText>Login Form</ListItemText>
+          </ListItem>
+        </Link>
+        <Link
+          to="/paginated-table"
+          style={{ textDecoration: 'none', color: theme.palette.text.primary }}
+        >
+          <ListItem>
+            <ListItemIcon>
+              <PersonIcon />
+            </ListItemIcon>
+            <ListItemText>Paginated Table</ListItemText>
           </ListItem>
         </Link>
       </List>
