@@ -12,3 +12,13 @@ export async function randomDelay(params: RandomDelayParams) {
     }, delay);
   });
 }
+
+const currencyFormatter = new Intl.NumberFormat('id-ID', {
+  style: 'currency',
+  currency: 'IDR',
+  minimumFractionDigits: 0,
+});
+
+export function formatCurrency(val: number) {
+  return currencyFormatter.format(val);
+}

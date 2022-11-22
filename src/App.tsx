@@ -1,36 +1,27 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+
+import { ChakraProvider } from '@chakra-ui/react';
 
 import Main from './layout/main';
 import StateManager from './state/context';
 import useCombinedReducer from './helper/reducer';
-import getThemeReducer from './state/theme/reducer';
 import getCredentialReducer from './state/credential/reducer';
+import theme from './config/theme';
 
 function App() {
   const [state, dispatch] = useCombinedReducer({
-    theme: React.useReducer(...getThemeReducer()),
     credential: React.useReducer(...getCredentialReducer()),
   });
-  const theme = React.useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode: state.theme?.theme || 'light',
-        },
-      }),
-    [state.theme?.theme]
-  );
 
   return (
     <StateManager.Provider value={{ state, dispatch }}>
-      <ThemeProvider theme={theme}>
-        <BrowserRouter>
+      <BrowserRouter>
+        <ChakraProvider theme={theme}>
           <Main />
-        </BrowserRouter>
-      </ThemeProvider>
+        </ChakraProvider>
+      </BrowserRouter>
     </StateManager.Provider>
   );
 }
