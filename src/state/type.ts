@@ -1,7 +1,7 @@
 import { CredentialState } from './credential/type';
 import { ThemeState } from './theme/type';
 
-export type StateKey = 'theme' | 'credential';
+export type StateKey = 'credential';
 export type StateType = CredentialState | ThemeState;
 
 export interface State {

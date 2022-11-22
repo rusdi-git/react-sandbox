@@ -37,3 +37,22 @@ export async function getPersons(params: GetPersonListParams): Promise<PersonDat
     total,
   };
 }
+
+export async function getPersonByName(params: { filter: string }) {
+  await randomDelay({ minTimeRange: 0.5, maxTimeRange: 1.5 });
+  const probabilityArray = [1, 2, 3, 4, 5];
+  const lengthResult = sample(probabilityArray) as number;
+  const isPhoneRegex = /^\d+$/;
+  let phoneProbability = (sample(probabilityArray) as number) > 3;
+  if (isPhoneRegex.exec(params.filter)) phoneProbability = true;
+  const result: Pick<PersonData, 'id' | 'name' | 'phoneNumber' | 'email'>[] = [];
+  for (let i = 0; i < lengthResult; i++) {
+    result.push({
+      id: v4(),
+      name: faker.name.firstName(),
+      phoneNumber: phoneProbability ? faker.phone.phoneNumber() : '',
+      email: faker.internet.email(),
+    });
+  }
+  return result;
+}

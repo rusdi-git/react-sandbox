@@ -1,52 +1,35 @@
 import React from 'react';
 
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
 import { Route, Routes } from 'react-router-dom';
 import Navigation from './navigation';
-import Calender from './calender';
+import Calendar from './calendar';
 import AppBar from './appbar';
+import { Box, Flex } from '@chakra-ui/react';
 import LoginForm from './login-form';
 import PersonTable from './person-table';
-
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-}));
-
-const EditableTable = () => {
-  return <h1>This is Editable Table</h1>;
-};
+import ArrayForm from './array-form';
+import Home from './home';
 
 export default function Main() {
   const [open, setOpen] = React.useState(false);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
+  const toggleDrawer = () => {
+    setOpen(!open);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
   return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <AppBar handleDrawerOpen={handleDrawerOpen} open={open} />
-      <Navigation handleDrawerClose={handleDrawerClose} open={open} />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
+    <Flex>
+      <AppBar open={open} />
+      <Navigation toggleDrawer={toggleDrawer} open={open} />
+      <Box flexGrow={1} marginTop="64px" padding="24px">
         <Routes>
-          <Route path="/calender" element={<Calender />} />
-          <Route path="/editable-table" element={<EditableTable />} />
-          <Route path="/login" element={<LoginForm />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/calendar" element={<Calendar />} />
           <Route path="/paginated-table" element={<PersonTable />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/array-form" element={<ArrayForm />} />
         </Routes>
       </Box>
-    </Box>
+    </Flex>
   );
 }

@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { v4 } from 'uuid';
 import {
   FetchListType,
   FetchStateListType,
@@ -13,18 +15,26 @@ export function useFetch<T>(func: () => Promise<T>, loadEarly = true): UseFetchR
     isError: false,
     errorMessage: '',
     data: null,
+    currentDataId: v4(),
   });
   useEffect(() => {
     const getData = async () => {
       try {
         const data = await func();
-        setFetchState({ isLoading: false, isError: false, errorMessage: '', data });
+        setFetchState({
+          isLoading: false,
+          isError: false,
+          errorMessage: '',
+          data,
+          currentDataId: v4(),
+        });
       } catch (error: unknown) {
         setFetchState({
           isLoading: false,
           isError: true,
           errorMessage: (error as Error).message,
           data: null,
+          currentDataId: fetchState.currentDataId,
         });
       }
     };
@@ -38,25 +48,30 @@ export function useFetch<T>(func: () => Promise<T>, loadEarly = true): UseFetchR
 
 export function useFetchList<T>(
   func: (limit: number, offset: number) => Promise<FetchListType<T>>,
-  limit: number,
-  offset: number
+  loadEarly = true
 ): UseFetchListReturnType<T> {
+  const limit = 10;
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const pageParams = searchParams.get('page');
+  const offset = pageParams ? (Number(pageParams) - 1) * 10 : 0;
   const [fetchState, setFetchState] = useState<FetchStateListType<T>>({
-    isLoading: true,
+    isLoading: loadEarly,
     isError: false,
     errorMessage: '',
     data: null,
     limit,
-    offset,
     total: 0,
   });
+
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await func(fetchState.limit, fetchState.offset);
+        const response = await func(fetchState.limit, offset);
         setFetchState({
           ...fetchState,
           ...{
+            isFetch: false,
             isLoading: false,
             isError: false,
             errorMessage: '',
@@ -68,6 +83,7 @@ export function useFetchList<T>(
         setFetchState({
           ...fetchState,
           ...{
+            isFetch: false,
             isLoading: false,
             isError: true,
             errorMessage: (error as Error).message,
@@ -78,14 +94,23 @@ export function useFetchList<T>(
     };
     if (fetchState.isLoading) getData();
   }, [fetchState.isLoading]);
+
+  useEffect(() => {
+    if (!fetchState.isLoading) reloadData();
+  }, [pageParams]);
   const reloadData = () => {
-    setFetchState({ ...fetchState, isLoading: false });
+    setFetchState({ ...fetchState, isLoading: true });
   };
   const changeLimit = (val: number) => {
-    setFetchState({ ...fetchState, ...{ isLoading: !fetchState.isLoading, limit: val } });
+    setFetchState({ ...fetchState, ...{ isFetch: true, limit: val } });
   };
-  const changeOffset = (val: number) => {
-    setFetchState({ ...fetchState, ...{ isLoading: !fetchState.isLoading, offset: val } });
+  const changePage = (val: number) => {
+    setSearchParams({ page: String(val) });
   };
-  return { state: fetchState, reloadData, changeLimit, changeOffset };
+  return {
+    state: { ...fetchState, page: Number(pageParams || 1) },
+    reloadData,
+    changeLimit,
+    changePage,
+  };
 }
