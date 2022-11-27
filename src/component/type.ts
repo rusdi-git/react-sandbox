@@ -66,3 +66,17 @@ export interface CalendarContext {
 export interface ChakraRadioFieldProps extends ChakraFieldProps {
   valueMap: { value: string; label?: string }[];
 }
+
+export interface PaginationProps {
+  total: number;
+  currentPage: number;
+  handlePageChange: (page: number) => void;
+  rowSize?: number;
+}
+
+export interface PaginationButtonProps {
+  page: number | '...';
+  target: number;
+  handlePageChange: (page: number) => void;
+  isCurrent: boolean;
+}
