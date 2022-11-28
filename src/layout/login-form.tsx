@@ -26,7 +26,6 @@ export default function Login() {
     handleSubmit,
     formState: { errors, isSubmitSuccessful, isSubmitting },
     setError,
-    register,
     control,
   } = useForm<LoginSchema>({
     defaultValues: {
@@ -78,7 +77,9 @@ export default function Login() {
       <Heading as={'h4'} fontSize={'2xl'}>
         Login
       </Heading>
-      <Text>Hint: admin@example.com|admin</Text>
+      <Text fontSize="xs" color="grey">
+        Hint: admin@example.com|admin
+      </Text>
       <Box as="form" noValidate mt="1" onSubmit={handleSubmit(onSubmit)} width="100%">
         {isSubmitSuccessful ? (
           <Alert status="success">

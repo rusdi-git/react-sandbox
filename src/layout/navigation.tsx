@@ -21,6 +21,7 @@ import {
   MdLogin,
   MdTableView,
   MdDynamicForm,
+  MdLockOutline,
 } from 'react-icons/md';
 import { ListItemLink } from '../component/router';
 import { NavigationProps } from './type';
@@ -30,7 +31,7 @@ export default function Navigation(props: NavigationProps) {
     <Flex
       width={props.open ? '240px' : '80px'}
       flexDirection="column"
-      overflowX="hidden"
+      // overflowX="hidden"
       minHeight="600px"
       sx={{
         transitionProperty: 'width',
@@ -48,30 +49,36 @@ export default function Navigation(props: NavigationProps) {
         </Link>
       </Box>
       <Divider />
-      <Box paddingTop="15px">
+      <Box paddingTop="15px" overflowX="hidden">
         <List>
           <ListItem>
             <ListItemLink to="/calendar">
               <ListIcon as={MdCalendarToday} minWidth="56px" />
-              <Text>Calendar</Text>
+              <Text whiteSpace="nowrap">Calendar</Text>
             </ListItemLink>
           </ListItem>
           <ListItem>
             <ListItemLink to="/paginated-table">
               <ListIcon as={MdTableView} minWidth="56px" />
-              <Text>Paginated Table</Text>
+              <Text whiteSpace="nowrap">Paginated Table</Text>
             </ListItemLink>
           </ListItem>
           <ListItem>
             <ListItemLink to="/login">
               <ListIcon as={MdLogin} minWidth="56px" />
-              <Text>Login</Text>
+              <Text whiteSpace="nowrap">Login</Text>
+            </ListItemLink>
+          </ListItem>
+          <ListItem>
+            <ListItemLink to="/private-page">
+              <ListIcon as={MdLockOutline} minWidth="56px" />
+              <Text whiteSpace="nowrap">Private Page</Text>
             </ListItemLink>
           </ListItem>
           <ListItem>
             <ListItemLink to="/array-form">
               <ListIcon as={MdDynamicForm} minWidth="56px" />
-              <Text>Array Form</Text>
+              <Text whiteSpace="nowrap">Array Form</Text>
             </ListItemLink>
           </ListItem>
         </List>

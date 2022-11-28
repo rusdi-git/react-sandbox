@@ -1,17 +1,17 @@
 import React from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 
-import { Link as ChakraLink, Button, ThemingProps, ColorProps, Icon } from '@chakra-ui/react';
+import { Link as ChakraLink, ColorProps, Icon } from '@chakra-ui/react';
 
 import StateManager from '../state/context';
 import { IconType } from 'react-icons';
 
-export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+export function ProtectedRoute({ children }: { children: JSX.Element }) {
   const state = React.useContext(StateManager).state;
   const location = useLocation();
   if (!state.credential?.token) return <Navigate to="/login" state={{ from: location }} replace />;
   return children;
-};
+}
 
 export function ListItemLink(props: { to: string; children: React.ReactNode }) {
   return (
