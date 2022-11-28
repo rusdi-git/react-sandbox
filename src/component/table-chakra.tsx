@@ -3,7 +3,7 @@ import React, { createContext, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { formatCurrency } from '../helper/general';
 import { BasicData, TableCell, TableType, TableRow } from './type';
-import Pagination from '@choc-ui/paginator';
+import Pagination from '../component/pagination';
 
 interface ITableStateContext {
   linkField?: string;
@@ -71,7 +71,7 @@ export default function ChakraTable<T extends BasicData>(props: TableType<T>) {
         </Table>
         {props.page !== 0 ? (
           <Box display="flex" justifyContent="flex-end" mt="4px" py="4px">
-            <Pagination
+            {/* <Pagination
               current={props.page}
               total={props.total}
               pageNeighbours={2}
@@ -82,6 +82,14 @@ export default function ChakraTable<T extends BasicData>(props: TableType<T>) {
               baseStyles={{ bg: 'baseGreen' }}
               activeStyles={{ bg: 'activeBlue' }}
               hoverStyles={{ bg: 'hoverGreen' }}
+            />
+          </Box> */}
+            <Pagination
+              total={props.total}
+              currentPage={props.page}
+              handlePageChange={(page) => {
+                if (page) props.changePage?.(page);
+              }}
             />
           </Box>
         ) : null}
