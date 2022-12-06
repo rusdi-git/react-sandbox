@@ -29,7 +29,6 @@ import { MdDelete, MdAddCircle } from 'react-icons/md';
 import ChakraAutoCompleteField from '../component/form/autocomplete-field';
 import ChakraDateField from '../component/form/date-field';
 import ChakraRadioField from '../component/form/radio-field';
-import ChakraTextField from '../component/form/text-field';
 import ChakraSelectField from '../component/form/select-field';
 import ChakraNumberFormatField from '../component/form/number-format-field';
 import { getProgramName } from '../data/program';
@@ -121,6 +120,7 @@ export default function ArrayForm() {
       setLocalState({ ...localState, transactionOptions: programs });
     };
     getPrograms();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {
@@ -130,16 +130,19 @@ export default function ArrayForm() {
         nominal: 0,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localState.addField]);
 
   React.useEffect(() => {
     if (localState.removeFieldIndex !== null && localState.removeIndexInc && fields.length > 1) {
       remove(localState.removeFieldIndex);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localState.removeIndexInc]);
 
   React.useEffect(() => {
     if (localState.personData) setValue('id', localState.personData.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localState.personData?.id]);
 
   React.useEffect(() => {

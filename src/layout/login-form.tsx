@@ -49,6 +49,7 @@ export default function Login() {
           resolve(true);
         }, 500);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubmitSuccessful]);
 
   const onSubmit = async (data: LoginSchema) => {

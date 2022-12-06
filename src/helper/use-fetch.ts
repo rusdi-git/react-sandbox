@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { v4 } from 'uuid';
 import {
   FetchListType,
   FetchStateListType,
@@ -9,13 +8,16 @@ import {
   UseFetchReturnType,
 } from './type';
 
-export function useFetch<T>(func: () => Promise<T>, loadEarly = true): UseFetchReturnType<T> {
+export function useFetch<T, P = undefined>(
+  func: (x?: P) => Promise<T>,
+  loadEarly = true,
+  initialParams?: P
+): UseFetchReturnType<T> {
   const [fetchState, setFetchState] = useState<FetchStateType<T>>({
     isLoading: loadEarly,
     isError: false,
     errorMessage: '',
     data: null,
-    currentDataId: v4(),
   });
   useEffect(() => {
     const getData = async () => {
@@ -26,7 +28,6 @@ export function useFetch<T>(func: () => Promise<T>, loadEarly = true): UseFetchR
           isError: false,
           errorMessage: '',
           data,
-          currentDataId: v4(),
         });
       } catch (error: unknown) {
         setFetchState({
@@ -34,16 +35,15 @@ export function useFetch<T>(func: () => Promise<T>, loadEarly = true): UseFetchR
           isError: true,
           errorMessage: (error as Error).message,
           data: null,
-          currentDataId: fetchState.currentDataId,
         });
       }
     };
     if (fetchState.isLoading) getData();
   }, [fetchState.isLoading]);
-  const toggleLoading = () => {
-    setFetchState({ ...fetchState, isLoading: !fetchState.isLoading });
+  const reloadData = () => {
+    setFetchState({ ...fetchState, isLoading: true });
   };
-  return { state: fetchState, toggleLoading };
+  return { state: fetchState, reloadData };
 }
 
 export function useFetchList<T>(
@@ -59,7 +59,7 @@ export function useFetchList<T>(
     isLoading: loadEarly,
     isError: false,
     errorMessage: '',
-    data: null,
+    data: [],
     limit,
     total: 0,
   });
@@ -87,7 +87,7 @@ export function useFetchList<T>(
             isLoading: false,
             isError: true,
             errorMessage: (error as Error).message,
-            data: null,
+            data: [],
           },
         });
       }

@@ -1,16 +1,19 @@
 import React from 'react';
 
-import { getPersons } from '../data/person';
+import { usePersons } from '../data/person';
 import { PersonData } from '../data/type';
-import { useFetchList } from '../helper/use-fetch';
 import ChakraTable from '../component/table-chakra';
 import { ColumnType } from '../component/type';
-import { Box, CircularProgress, Flex, Heading } from '@chakra-ui/react';
+import { Box, CircularProgress, Heading, Text } from '@chakra-ui/react';
+import { useSearchParams } from 'react-router-dom';
 
 export default function PersonTable() {
-  const { state, changePage } = useFetchList(async (limit: number, offset: number) => {
-    return await getPersons({ limit, offset });
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageParams = Number(searchParams.get('page') || 1);
+  const { data, error, isLagging } = usePersons({ limit: 10, offset: (pageParams - 1) * 10 });
+  const changePage = (val: number) => {
+    setSearchParams({ page: String(val) });
+  };
   const columns: ColumnType<keyof PersonData>[] = [
     { field: 'name', label: 'Nama' },
     { field: 'phoneNumber', label: 'Telepon' },
@@ -18,22 +21,23 @@ export default function PersonTable() {
     { field: 'address', label: 'Alamat' },
     { field: 'job', label: 'Pekerjaan' },
   ];
+  if (error) return <Text>Error</Text>;
 
   return (
     <Box>
       <Heading>Rekap Biodata</Heading>
-      {state.isLoading && !state.data ? (
+      {!data ? (
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <CircularProgress isIndeterminate />
         </Box>
       ) : (
         <ChakraTable
-          data={state.data ?? []}
+          data={data?.data ?? []}
           columns={columns}
-          page={state.page}
+          page={pageParams}
           changePage={changePage}
-          total={state.total}
-          isLoading={state.isLoading}
+          total={data?.total || 0}
+          isLoading={data === undefined || isLagging}
         />
       )}
     </Box>

@@ -1,7 +1,9 @@
 import faker from '@faker-js/faker';
 import { sample } from 'lodash';
+import useSWR from 'swr';
 import { v4 } from 'uuid';
 import { randomDelay } from '../helper/general';
+import { Laggy, laggy } from '../helper/swr';
 import { PersonData, PersonDataResponse } from './type';
 
 interface GetPersonListParams {
@@ -38,7 +40,19 @@ export async function getPersons(params: GetPersonListParams): Promise<PersonDat
   };
 }
 
+export function usePersons(params: GetPersonListParams) {
+  const res = useSWR(params, getPersons, { use: [laggy] });
+  const { data, error, isLagging, resetLaggy } = res as Laggy<typeof res>;
+  return {
+    data,
+    error,
+    isLagging,
+    resetLaggy,
+  };
+}
+
 export async function getPersonByName(params: { filter: string }) {
+  console.log('Check filter', params.filter);
   await randomDelay({ minTimeRange: 0.5, maxTimeRange: 1.5 });
   const probabilityArray = [1, 2, 3, 4, 5];
   const lengthResult = sample(probabilityArray) as number;

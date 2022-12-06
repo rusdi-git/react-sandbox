@@ -69,30 +69,15 @@ export default function ChakraTable<T extends BasicData>(props: TableType<T>) {
           </Thead>
           <Tbody>{React.Children.toArray(bodyRows)}</Tbody>
         </Table>
-        {props.page !== 0 ? (
-          <Box display="flex" justifyContent="flex-end" mt="4px" py="4px">
-            {/* <Pagination
-              current={props.page}
-              total={props.total}
-              pageNeighbours={2}
-              onChange={(page) => {
-                if (page) props.changePage?.(page);
-              }}
-              paginationProps={{ display: 'flex', color: 'white' }}
-              baseStyles={{ bg: 'baseGreen' }}
-              activeStyles={{ bg: 'activeBlue' }}
-              hoverStyles={{ bg: 'hoverGreen' }}
-            />
-          </Box> */}
-            <Pagination
-              total={props.total}
-              currentPage={props.page}
-              handlePageChange={(page) => {
-                if (page) props.changePage?.(page);
-              }}
-            />
-          </Box>
-        ) : null}
+        <Box display="flex" justifyContent="flex-end" mt="4px" py="4px">
+          <Pagination
+            total={props.total}
+            currentPage={props.page}
+            handlePageChange={(page) => {
+              if (page) props.changePage?.(page);
+            }}
+          />
+        </Box>
       </TableContainer>
     </TableStateContext.Provider>
   );
