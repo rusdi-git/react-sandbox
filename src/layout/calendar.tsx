@@ -189,7 +189,7 @@ function CalCell(props: { day: Date }) {
   const selectDate =
     state.mode === 'date'
       ? (val: Date) => {
-          changeSelected!(val);
+          changeSelected(val);
         }
       : (val: Date) => changeDisplayed(val, state.mode === 'year' ? 'month' : 'date');
   return (

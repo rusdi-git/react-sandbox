@@ -15,36 +15,40 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-import { useFetch } from '../../helper/use-fetch';
 import { ChakraAutoCompleteFieldProps } from '../type';
+import useSWRImmutable from 'swr/immutable';
 
 export default function ChakraAutoCompleteField<T>(props: ChakraAutoCompleteFieldProps<T>) {
   const [localState, setLocalState] = React.useState<{
     value: T | null;
     inputValue: string;
+    searchValue: string;
     isOpen: boolean;
-  }>({ value: null, inputValue: '', isOpen: true });
+  }>({ value: null, inputValue: '', searchValue: '', isOpen: false });
   const [getData, setGetData] = React.useState(false);
-  const { state, toggleLoading } = useFetch<T[]>(
-    async () => props.fetchData({ filter: localState.inputValue }),
-    false
+  const { data, error } = useSWRImmutable(
+    localState.searchValue ? { filter: localState.searchValue } : null,
+    props.fetchData
   );
   const ref = React.useRef(null);
   useOutsideClick({
     ref: ref,
     handler: () => setLocalState({ ...localState, isOpen: false }),
   });
-  const getListData = () => {
-    setGetData(true);
-  };
 
-  const debouncedInputChange = React.useCallback(debounce(getListData, 1000), []);
+  const debouncedInputChange = React.useCallback(
+    debounce(() => {
+      setGetData(true);
+    }, 1000),
+    []
+  );
   React.useEffect(() => {
     return () => debouncedInputChange.cancel();
   }, []);
   React.useEffect(() => {
     if (getData) {
-      if (localState.inputValue.length > 3) toggleLoading();
+      if (localState.inputValue.length > 3)
+        setLocalState({ ...localState, searchValue: localState.inputValue });
       setGetData(false);
     }
   }, [getData]);
@@ -54,7 +58,7 @@ export default function ChakraAutoCompleteField<T>(props: ChakraAutoCompleteFiel
       props.triggerEffectValue?.(localState.value);
       closePopOver();
     }
-  }, [localState.value]);
+  }, [JSON.stringify(localState.value)]);
 
   const closePopOver = () => {
     setLocalState({ ...localState, isOpen: false });
@@ -96,7 +100,7 @@ export default function ChakraAutoCompleteField<T>(props: ChakraAutoCompleteFiel
       <PopoverContent maxWidth="250px">
         <PopoverBody ref={ref}>
           <ChakraAutoCompleteList<T>
-            items={state.data || []}
+            items={data || []}
             label={props.labelKey}
             onChooseOption={setOptionValue}
           />

@@ -3,12 +3,11 @@ export interface FetchStateType<T> {
   isError: boolean;
   errorMessage: string;
   data: T | null;
-  currentDataId: string;
 }
 
 export interface UseFetchReturnType<T> {
   state: FetchStateType<T>;
-  toggleLoading: () => void;
+  reloadData: () => void;
 }
 
 export interface FetchListType<T> {
@@ -22,7 +21,7 @@ export interface FetchStateListType<T> {
   isLoading: boolean;
   isError: boolean;
   errorMessage: string;
-  data: T[] | null;
+  data: T[];
   limit: number;
   total: number;
 }
