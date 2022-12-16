@@ -2,6 +2,7 @@ import faker from '@faker-js/faker';
 import { sample } from 'lodash';
 import useSWR from 'swr';
 import { v4 } from 'uuid';
+import { GroupSchema } from '../component/type';
 import { randomDelay } from '../helper/general';
 import { Laggy, laggy } from '../helper/swr';
 import { PersonData, PersonDataResponse } from './type';
@@ -9,6 +10,7 @@ import { PersonData, PersonDataResponse } from './type';
 interface GetPersonListParams {
   limit: number;
   offset: number;
+  query?: object;
 }
 
 export async function getPersons(params: GetPersonListParams): Promise<PersonDataResponse> {

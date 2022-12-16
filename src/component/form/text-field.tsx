@@ -17,7 +17,7 @@ export default function ChakraTextField(props: ChakraFieldProps) {
           )}
           <Input
             id={props.field}
-            placeholder={props.label || props.field}
+            placeholder={props.placeholder || props.label || props.field}
             {...(props.type && { type: props.type })}
             {...field}
           />

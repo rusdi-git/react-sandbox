@@ -13,7 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@chakra-ui/react';
-import { CalendarContext, CalendarMode, ChakraFieldProps } from '../type';
+import { CalendarMode, ChakraFieldProps } from '../type';
 import Calendar from '../calendar';
 
 export default function ChakraDateField(props: ChakraFieldProps) {
@@ -42,10 +42,12 @@ export default function ChakraDateField(props: ChakraFieldProps) {
           <Popover returnFocusOnClose={false} isOpen={fieldState.isOpen} onClose={closePopOver}>
             <PopoverTrigger>
               <FormControl isInvalid={props.error !== undefined} my="1">
-                <FormLabel htmlFor={props.field}>{props.label || props.field}</FormLabel>
+                {props.label === null ? null : (
+                  <FormLabel htmlFor={props.field}>{props.label || props.field}</FormLabel>
+                )}
                 <Input
                   id={props.field}
-                  placeholder={props.label || props.field}
+                  placeholder={props.placeholder || props.label || props.field}
                   value={value ? format(value, 'P', { locale: id }) : ''}
                   readOnly
                   onClick={togglePopOver}

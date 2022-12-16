@@ -1,5 +1,11 @@
-import { LayoutProps } from '@chakra-ui/react';
+import { ThemingProps } from '@chakra-ui/react';
 import { Control, FieldError } from 'react-hook-form';
+import {
+  groupOperator,
+  operatorDateOptions,
+  operatorNumberOptions,
+  operatorStringOptions,
+} from './filter-form';
 
 export interface BasicData {
   id: string;
@@ -40,6 +46,7 @@ export interface ChakraFieldProps {
   label?: string | null;
   control: Control;
   type?: string;
+  placeholder?: string;
 }
 
 export interface ChakraAutoCompleteFieldProps<T> {
@@ -52,19 +59,17 @@ export interface ChakraAutoCompleteFieldProps<T> {
 }
 
 export interface ChakraRadioFieldProps extends ChakraFieldProps {
-  valueMap: { value: string; label?: string }[];
+  valueMap: { value: string; label?: string | JSX.Element }[];
+  size?: ThemingProps<'Select'>['size'];
+  variant?: ThemingProps<'Select'>['variant'];
 }
 
 export type CalendarMode = 'date' | 'month' | 'year';
 
 export interface CalendarContext {
   state: { selected: Date | null; displayed: Date; mode: CalendarMode };
-  changeSelected?: (val: Date) => void;
-  changeDisplayed?: (val: Date, mode: CalendarMode) => void;
-}
-
-export interface ChakraRadioFieldProps extends ChakraFieldProps {
-  valueMap: { value: string; label?: string }[];
+  changeSelected: (val: Date) => void;
+  changeDisplayed: (val: Date, mode: CalendarMode) => void;
 }
 
 export interface PaginationProps {
@@ -79,4 +84,26 @@ export interface PaginationButtonProps {
   target: number;
   handlePageChange: (page: number) => void;
   isCurrent: boolean;
+}
+
+export interface ItemSchema {
+  type: 'item';
+  field: string;
+  operator:
+    | typeof operatorNumberOptions[number]
+    | typeof operatorStringOptions[number]
+    | typeof operatorDateOptions[number];
+  value: string | number;
+}
+
+export interface GroupSchema {
+  type: 'group';
+  operator: typeof groupOperator[number];
+  items: (ItemSchema | GroupSchema)[];
+}
+
+export interface FieldData {
+  field: string;
+  type: 'string' | 'number' | 'date';
+  label: string;
 }

@@ -20,7 +20,13 @@ export default function ChakraSelectField(props: ChakraRadioFieldProps) {
           {props.label === null ? null : (
             <FormLabel htmlFor={props.field}>{props.label || props.field}</FormLabel>
           )}
-          <Select id={props.field} value={value} onChange={onChange}>
+          <Select
+            id={props.field}
+            value={value}
+            onChange={onChange}
+            size={props.size || 'md'}
+            variant={props.variant || 'outline'}
+          >
             {selectInputs}
           </Select>
           <FormErrorMessage>{props.error && props.error.message}</FormErrorMessage>
