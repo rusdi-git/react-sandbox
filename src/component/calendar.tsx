@@ -34,15 +34,13 @@ import {
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { CalendarContext, CalendarMode } from './type';
 
-const CalendarStateManager = React.createContext<Required<CalendarContext>>({
-  state: { selected: null, displayed: new Date(), mode: 'date' },
-  changeDisplayed: () => {
-    //
-  },
-  changeSelected: () => {
-    //
-  },
-});
+const CalendarStateManager = React.createContext<CalendarContext | undefined>(undefined);
+
+const useCalenderContext = () => {
+  const context = React.useContext(CalendarStateManager);
+  if (!context) throw new Error('Calender context not found');
+  return context;
+};
 
 export default function Calendar(params: {
   handleSelect?: (val: Date) => void;
@@ -80,7 +78,7 @@ export default function Calendar(params: {
 }
 
 function CalHeader() {
-  const { state, changeDisplayed } = React.useContext(CalendarStateManager);
+  const { state, changeDisplayed } = useCalenderContext();
   const nextDisplay = () => {
     switch (state.mode) {
       case 'date':
@@ -178,7 +176,7 @@ function CalDays() {
 }
 
 function CalCell(props: { day: Date }) {
-  const { changeSelected, state, changeDisplayed } = React.useContext(CalendarStateManager);
+  const { changeSelected, state, changeDisplayed } = useCalenderContext();
   const dateFormat = state.mode === 'date' ? 'd' : state.mode === 'month' ? 'MMM' : 'yyyy';
   const formattedDate = format(props.day, dateFormat, { locale: id });
   const isDateToday =
@@ -223,7 +221,7 @@ function CalCell(props: { day: Date }) {
 }
 
 function CalRows() {
-  const { state } = React.useContext(CalendarStateManager);
+  const { state } = useCalenderContext();
 
   const rows: JSX.Element[] = [];
   let row: JSX.Element[] = [];

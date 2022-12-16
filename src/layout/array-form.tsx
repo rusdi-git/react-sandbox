@@ -100,14 +100,9 @@ export default function ArrayForm() {
   ];
 
   const addDetail = () => {
-    setLocalState({ ...localState, addField: localState.addField + 1 });
-  };
-
-  const removeDetail = (index: number) => {
-    setLocalState({
-      ...localState,
-      removeFieldIndex: index,
-      removeIndexInc: localState.removeIndexInc + 1,
+    append({
+      program: '',
+      nominal: 0,
     });
   };
 
@@ -122,23 +117,6 @@ export default function ArrayForm() {
     getPrograms();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  React.useEffect(() => {
-    if (localState.addField) {
-      append({
-        program: '',
-        nominal: 0,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [localState.addField]);
-
-  React.useEffect(() => {
-    if (localState.removeFieldIndex !== null && localState.removeIndexInc && fields.length > 1) {
-      remove(localState.removeFieldIndex);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [localState.removeIndexInc]);
 
   React.useEffect(() => {
     if (localState.personData) setValue('id', localState.personData.id);
@@ -238,7 +216,7 @@ export default function ArrayForm() {
                         colorScheme="red"
                         icon={<MdDelete />}
                         aria-label="Delete Detail"
-                        onClick={() => removeDetail(i)}
+                        onClick={() => remove(i)}
                         variant="ghost"
                       />
                     </Td>
